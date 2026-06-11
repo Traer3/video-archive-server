@@ -1,33 +1,27 @@
 const { cleanName } = require("../toolsService");
 
+exports.clearNames = (videos) => {
+    return clearNames(videos)
+}
 
 exports.newNameChecker = async (YTVideos, DBvideos, Links) => {
     if (!YTVideos) return;
     try {
-        const cleanDBnames = await clearNames(DBvideos);
         const cleanLinks = await clearNames(Links);
-        const cleanYTLinks = await clearNames(YTVideos)
 
-        const NamesFromDB = new Set(cleanDBnames.map(video => video.name))
+        const NamesFromDB = new Set(DBvideos.map(video => cleanName(video.name)))
         const newVids = []
         for(const video of YTVideos){
             const cleanVideo = cleanName(video.name);
             const isTrash = cleanVideo === "private video" || cleanVideo === "deleted video";
-            if (isTrash) return false;
+            if (isTrash){
+                continue;
+            }
             const isAlreadyInDB = NamesFromDB.has(cleanVideo);
             if(!isAlreadyInDB){
                 newVids.push(video);
             }
         }
-        /*
-        const newVids = cleanYTLinks.filter(video => {
-            const name = video.name;
-            const isTrash = name === "private video" || name === "deleted video";
-            if (isTrash) return false;
-            const isAlreadyInDB = NamesFromDB.has(name);
-            return !isAlreadyInDB
-        });
-        */
 
         const checkedVideos = await lockedLinks(newVids, cleanLinks);
 
@@ -36,10 +30,6 @@ exports.newNameChecker = async (YTVideos, DBvideos, Links) => {
         console.error(`Error in newNameChecker : ${err}`)
     }
 };
-
-exports.clearNames = (videos) => {
-    return clearNames(videos)
-}
 
 async function clearNames(videos) {
     const cleanedVideos = [];
@@ -52,8 +42,6 @@ async function clearNames(videos) {
     }
     return cleanedVideos;
 };
-
-
 async function lockedLinks(newVids, cleanLinks) {
     if (!newVids || newVids.length === 0) return [];
     try {
