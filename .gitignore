@@ -1,0 +1,11 @@
+#user folders
+videos/
+thumbnails/
+
+#user configs
+config.js
+
+#user credetials
+/middleware/auth/
+!/middleware/auth/authorize.js
+!/middleware/auth/generateQRCode.js
