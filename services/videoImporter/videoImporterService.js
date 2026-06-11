@@ -1,10 +1,9 @@
 const path = require('path');
 
 const { getVideoList, importVideo } = require("../videoService.js");
-const { exists, cleanName } = require("../toolsService.js");
+const { exists, cleanName, clearNames } = require("../toolsService.js");
 const { addLog } = require("../logService.js");
 const { getLinks } = require("../linksService.js");
-const { clearNames } = require("../linksGenerator/newNameChecker.js");
 const { getVideoSize } = require("./getVideoSize.js");
 
 const VIDEOS_DIR = path.join(__dirname, "../../videos");
@@ -15,7 +14,7 @@ exports.videoImporter = async (name) => {
         return;
     };
     const DBvideos = await getVideoList();
-    const cleanDBvideos = await clearNames(DBvideos);
+    const cleanDBvideos = clearNames(DBvideos);
     const namesFromDB = new Map(cleanDBvideos.map(video => [video.name, video]))
 
     try {
@@ -98,7 +97,7 @@ async function checkDuplicate(DBvideos, video) {
 
 async function checkCategory(video) {
     const YTLinks = await getLinks() // это потенциальные 2к запроса на один и тот же список 
-    const YTLinksClean = await clearNames(YTLinks);
+    const YTLinksClean = clearNames(YTLinks);
     const YTNames = new Set(YTLinksClean.map(video => video.name))
     const videoName = cleanName(video.name)
     if (YTNames.has(videoName)) {

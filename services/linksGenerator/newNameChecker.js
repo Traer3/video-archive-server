@@ -1,13 +1,9 @@
-const { cleanName } = require("../toolsService");
-
-exports.clearNames = (videos) => {
-    return clearNames(videos)
-}
+const { cleanName, clearNames } = require("../toolsService");
 
 exports.newNameChecker = async (YTVideos, DBvideos, Links) => {
     if (!YTVideos) return;
     try {
-        const cleanLinks = await clearNames(Links);
+        const cleanLinks = clearNames(Links);
 
         const NamesFromDB = new Set(DBvideos.map(video => cleanName(video.name)))
         const newVids = []
@@ -31,17 +27,6 @@ exports.newNameChecker = async (YTVideos, DBvideos, Links) => {
     }
 };
 
-async function clearNames(videos) {
-    const cleanedVideos = [];
-    for (const video of videos) {
-        let clearedVideo = {
-            ...video,
-            name: cleanName(video.name)
-        }
-        cleanedVideos.push(clearedVideo)
-    }
-    return cleanedVideos;
-};
 async function lockedLinks(newVids, cleanLinks) {
     if (!newVids || newVids.length === 0) return [];
     try {

@@ -1,9 +1,9 @@
 const { consoleAuthorization } = require("../../middleware/auth/authorize");
 const { getVideoList } = require("../videoService");
-const { cleanName } = require('../toolsService');
+const { cleanName, clearNames } = require('../toolsService');
 const { writeLinks, getLinks } = require('../linksService');
 const { getYouTubeLinks } = require("./getYouTubeLinks");
-const { newNameChecker, clearNames } = require("./newNameChecker");
+const { newNameChecker } = require("./newNameChecker");
 const { simulateDownload } = require("./simulatingDownload");
 
 exports.YTGetLinks = async () => {
@@ -40,8 +40,8 @@ async function sendNewLinks(Links, YTVideos) {
         return [];
     }
 
-    const cleanLinks = await clearNames(Links);
-    const cleanYTLinks = await clearNames(YTVideos);
+    const cleanLinks = clearNames(Links);
+    const cleanYTLinks = clearNames(YTVideos);
     const linkNames = new Set(cleanLinks.map(video => video.name))
     const freshLinks = cleanYTLinks.filter(video => !linkNames.has(video.name));
     return freshLinks;

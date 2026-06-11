@@ -1,13 +1,12 @@
 const { lockedVideo } = require("../linksService");
 const { addLog } = require("../logService");
-const { runCommand } = require("../toolsService");
-const { clearNames } = require("./newNameChecker");
+const { runCommand, clearNames } = require("../toolsService");
 
 
 exports.simulateDownload = async (newVideos, Links) => {
     const videoForDownload = [];
 
-    const clearedLinks = await clearNames(Links)
+    const clearedLinks = clearNames(Links)
     const linksMap = clearedLinks.length > 0
         ? new Map(clearedLinks.map(link => [link.name, link]))
         : new Map();

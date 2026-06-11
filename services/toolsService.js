@@ -81,29 +81,48 @@ exports.deleteFile = async (filePath) => {
 
 exports.cleanName = (str) => {
     if (!str) return "";
+    const answer = cleanName(str)
+    return answer;
+};
+
+function cleanName(str){
     const newName = str
-        //.normalize('NFD')
-        .toLowerCase()
-        //.replace(/[^a-z0-9\s]/g, '')
-        .replace(/[^ \p{L}\p{N}]/gu, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-    if (!newName || newName === ''){
-        return str;
+    //.normalize('NFD')
+    .toLowerCase()
+    //.replace(/[^a-z0-9\s]/g, '')
+    .replace(/[^ \p{L}\p{N}]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+if (!newName || newName === ''){
+    return str;
+}
+return newName;
+/* ебал того рот этих пробелов 
+    .toLowerCase()
+    .replace(/[\uFF1A]/g, ':')
+    .replace(/[\uFF5C]/g, '|')
+    .replace(/[\u2215\u29F8\u2044\u27CB\u27CD]/g, '/')
+    .replace(/[\uFF1F]/g, '?')
+    .replace(/[【「]/g, '[')
+    .replace(/[】」]/g, ']')
+    .replace(/[\s\u00A0\u2000-\u200B\u202F\u205F\u3000]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+*/
+}
+
+exports.clearNames = (videos) => {
+    if(!videos || videos.length === 0) return null;
+
+    const cleanedVideos = [];
+    for (const video of videos) {
+        let clearedVideo = {
+            ...video,
+            name: cleanName(video.name)
+        }
+        cleanedVideos.push(clearedVideo)
     }
-    return newName;
-    /* ебал того рот этих пробелов 
-        .toLowerCase()
-        .replace(/[\uFF1A]/g, ':')
-        .replace(/[\uFF5C]/g, '|')
-        .replace(/[\u2215\u29F8\u2044\u27CB\u27CD]/g, '/')
-        .replace(/[\uFF1F]/g, '?')
-        .replace(/[【「]/g, '[')
-        .replace(/[】」]/g, ']')
-        .replace(/[\s\u00A0\u2000-\u200B\u202F\u205F\u3000]+/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-    */
+    return cleanedVideos;
 };
 
 exports.deleteExtension = (str) =>{

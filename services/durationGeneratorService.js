@@ -2,9 +2,8 @@ const path = require('path');
 const Ffmpeg = require("fluent-ffmpeg");
 
 const { readFolders, getVideoList, saveVidDuration } = require("./videoService.js");
-const { exists, addExtension, cleanName, deleteExtension } = require("./toolsService");
+const { exists, addExtension, cleanName, clearNames ,deleteExtension } = require("./toolsService");
 const { addLog } = require("./logService.js");
-const { clearNames } = require('./linksGenerator/newNameChecker.js');
 const VIDEOS_DIR = path.join(__dirname, "../videos");
 
 
@@ -16,7 +15,7 @@ exports.durationGenerator = async () => {
     };
     try {
         const DBvideos = await getVideoList();
-        const cleanDBNames = await clearNames(DBvideos)
+        const cleanDBNames = clearNames(DBvideos)
         const folderVideos = await readFolders(VIDEOS_DIR);
 
         const folderMap = new Map(folderVideos.map(video => [cleanName(deleteExtension(video.name)), video]))
