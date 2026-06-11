@@ -61,7 +61,7 @@ async function checkDuplicate(DBvideos, video) {
     };
     const normalName = cleanName(video.name);
     const foundVideo = DBvideos.get(normalName);
-    console.log("foundVideo: ",foundVideo)  //найти размер 
+    //console.log("foundVideo: ",foundVideo)  //найти размер 
 
     if (!foundVideo) {
         const categorizedVideo = await checkCategory(video);

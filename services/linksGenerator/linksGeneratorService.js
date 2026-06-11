@@ -23,6 +23,7 @@ exports.YTGetLinks = async () => {
 
     const newVideos = await newNameChecker(currentYTVideos, DBvideos, Links);
     if (!newVideos) {
+        console.log("No fresh videos")
         return [];
     }
 
