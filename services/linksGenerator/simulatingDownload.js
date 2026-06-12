@@ -2,7 +2,6 @@ const { lockedVideo } = require("../linksService");
 const { addLog } = require("../logService");
 const { runCommand, clearNames } = require("../toolsService");
 
-
 exports.simulateDownload = async (newVideos, Links) => {
     const videoForDownload = [];
 
@@ -25,7 +24,7 @@ exports.simulateDownload = async (newVideos, Links) => {
             }
         } catch (err) {
             console.log(`❌ Error processing link: ${video.url}`);
-            const errorMessage = err?.message || String(err) || "";
+            const errorMessage = err.stderr?.message || String(err.stderr) || "";
             let category = "General error";
 
             if (errorMessage.includes("Sign in to confirm your age")) {
@@ -35,7 +34,7 @@ exports.simulateDownload = async (newVideos, Links) => {
             } else if (errorMessage.includes("blocked it in your country")) {
                 category = "Country restriction";
             }else{
-                console.error(`Unusual error: ${err}`)
+                category = `Unusual error: ${err.stderr}`
             }
 
             await addLog({
@@ -60,5 +59,3 @@ async function lockedId(linksMap, video) {
         console.log(`Video not found in Map: ${video.name}`)
     }
 }
-
-//ОШИБКИ
