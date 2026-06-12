@@ -17,19 +17,15 @@ exports.simulateDownload = async (newVideos, Links) => {
         i++
         //if (videoForDownload.length >= 5) break;
         try {
-            //console.log("Trying yt-dlp ....")
             const comand1 = `yt-dlp -s "${video.url}"`
-
             const respond = await runCommand(comand1);
-
-            if (respond) {
+            if (respond.stdout) {
                 console.log(`[${i}/${newVideos.length}] processing video : ${video.name}`)
                 videoForDownload.push({ name: video.name, url: video.url })
             }
         } catch (err) {
             console.log(`❌ Error processing link: ${video.url}`);
-
-            const errorMessage = err.message;
+            const errorMessage = err?.message || String(err) || "";
             let category = "General error";
 
             if (errorMessage.includes("Sign in to confirm your age")) {
@@ -38,6 +34,8 @@ exports.simulateDownload = async (newVideos, Links) => {
                 category = "Music Premium";
             } else if (errorMessage.includes("blocked it in your country")) {
                 category = "Country restriction";
+            }else{
+                console.error(`Unusual error: ${err}`)
             }
 
             await addLog({
@@ -45,7 +43,6 @@ exports.simulateDownload = async (newVideos, Links) => {
                 message: `🧱 Video ${video.name} : ${category} `
             });
             await lockedId(linksMap, video)
-
         }
     };
     return videoForDownload;
@@ -63,3 +60,5 @@ async function lockedId(linksMap, video) {
         console.log(`Video not found in Map: ${video.name}`)
     }
 }
+
+//ОШИБКИ
