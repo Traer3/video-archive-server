@@ -11,6 +11,8 @@ exports.simulateDownload = async (newVideos, Links) => {
         : new Map();
 
     console.log(`🥽 Simulating a download\n`)
+    //console.log("linksMap: ",linksMap)
+    //return;
     let i = 0;
     for (const video of newVideos) {
         i++
@@ -41,7 +43,8 @@ exports.simulateDownload = async (newVideos, Links) => {
                 type: "SimulatingDownload",
                 message: `🧱 Video ${video.name} : ${category} `
             });
-            await lockedId(linksMap, video)
+            console.log(`video: ${video}`)
+            await lockedId(linksMap, video) // В linksMap нету этих видосов 
         }
     };
     return videoForDownload;

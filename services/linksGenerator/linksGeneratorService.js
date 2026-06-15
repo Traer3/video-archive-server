@@ -11,22 +11,37 @@ exports.YTGetLinks = async () => {
     const DBvideos = await getVideoList();
     const Links = await getLinks();
     const auth = await consoleAuthorization();
-
+    
     const currentYTVideos = auth.status
         ? await getYouTubeLinks(auth.client)
         : [];
     
     const freshLinks = await sendNewLinks(Links, currentYTVideos);
     if (freshLinks || freshLinks.length > 0) {
+        console.log("freshLinks : ",freshLinks)
         await sendLikes(freshLinks);
     }
-
+    return;
     const newVideos = await newNameChecker(currentYTVideos, DBvideos, Links);
     if (!newVideos) {
         console.log("No fresh videos")
         return [];
     }
-
+    
+    const newVideos2 = [
+        {
+            name: '[Blue Archive] Aris & Kei - Protocol SUPERNOVA MV',
+            url: 'https://youtu.be/Pm4KSlf19pI'
+        },
+        {
+            name: 'YESOD',
+            url: 'https://youtu.be/v3lsDlgi3IE'
+        },
+        {
+            name: 'Bury the Light',
+            url: 'https://youtu.be/sFsq8Pb0Meo'
+        }
+    ]
     let videoForDownload
     if (newVideos.length !== 0) {
         videoForDownload = await simulateDownload(newVideos, Links)
@@ -41,10 +56,10 @@ async function sendNewLinks(Links, YTVideos) {
         return [];
     }
 
-    const cleanLinks = clearNames(Links);
-    const cleanYTLinks = clearNames(YTVideos);
-    const linkNames = new Set(cleanLinks.map(video => video.name))
-    const freshLinks = cleanYTLinks.filter(video => !linkNames.has(video.name));
+    //const cleanLinks = clearNames(Links);
+    //const cleanYTLinks = clearNames(YTVideos);
+    const linkNames = new Set(Links.map(video => cleanName(video.name)))
+    const freshLinks = YTVideos.filter(video => !linkNames.has(cleanName(video.name)));
     return freshLinks;
 }
 
