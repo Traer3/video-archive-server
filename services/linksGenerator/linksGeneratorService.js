@@ -7,7 +7,7 @@ const { newNameChecker } = require("./newNameChecker");
 const { simulateDownload } = require("./simulatingDownload");
 
 exports.YTGetLinks = async () => {
-    console.log(`\n 🗘 Receiving links...`);
+    console.log(`\n🗘 Receiving links...`);
     const DBvideos = await getVideoList();
     let Links = await getLinks();
     const auth = await consoleAuthorization();

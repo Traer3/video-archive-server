@@ -18,7 +18,7 @@ exports.VideoDownloader = async () => {
         const latestVideoTime = latestVideo.last_updated;
         const checkTime = checkHours(6, latestVideoTime)
 
-        if (true) {
+        if (checkTime) {
             const currentTime = new Date();
             await writeUpdate({
                 id: latestVideo.id,

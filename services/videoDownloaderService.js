@@ -13,7 +13,7 @@ exports.beginDownloadingVideos = async (dbLinks) => {
         return;
     };
 
-    if (dbLinks.length === 0) {
+    if (!dbLinks || dbLinks.length === 0) {
         console.error("❌ No available links");
         return;
     }
