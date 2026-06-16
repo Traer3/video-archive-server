@@ -9,7 +9,7 @@ const { simulateDownload } = require("./simulatingDownload");
 exports.YTGetLinks = async () => {
     console.log(`\n 🗘 Receiving links...`);
     const DBvideos = await getVideoList();
-    const Links = await getLinks();
+    let Links = await getLinks();
     const auth = await consoleAuthorization();
     
     const currentYTVideos = auth.status
@@ -28,6 +28,9 @@ exports.YTGetLinks = async () => {
 
     let videoForDownload
     if (newVideos.length !== 0) {
+        if(!Links || Links.length === 0){
+            Links = await getLinks();
+        }
         videoForDownload = await simulateDownload(newVideos, Links)
         console.log(`\n🏁 Links written`);
         return videoForDownload;

@@ -18,9 +18,7 @@ exports.newNameChecker = async (YTVideos, DBvideos, Links) => {
                 newVids.push(video);
             }
         }
-
         const checkedVideos = await lockedLinks(newVids, cleanLinks);
-
         return checkedVideos;
     } catch (err) {
         console.error(`Error in newNameChecker : ${err}`)
@@ -30,7 +28,7 @@ exports.newNameChecker = async (YTVideos, DBvideos, Links) => {
 async function lockedLinks(newVids, cleanLinks) {
     if (!newVids || newVids.length === 0) return [];
     try {
-        if (cleanLinks.length === 0) {
+        if (!cleanLinks || cleanLinks.length === 0) {
             console.log("Table links is empty")
             return newVids;
         };
@@ -49,7 +47,6 @@ async function lockedLinks(newVids, cleanLinks) {
         const canDownload = newVids.filter(vid => {
             const cleanVid = cleanName(vid.name)
             const isLocked = lockedVideos.has(cleanVid);
-
             if (isLocked) {
                 //console.log(`Skiping! Allready locked: ${vid.name}`);
             }

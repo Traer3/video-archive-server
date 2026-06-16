@@ -23,7 +23,7 @@ exports.simulateDownload = async (newVideos, Links) => {
                 videoForDownload.push({ name: video.name, url: video.url })
             }
         } catch (err) {
-            console.log(`❌ Error processing link: ${video.url}`);
+            console.log(`[${i}/${newVideos.length}] ❌ Error processing link: ${video.url}`);
             const errorMessage = err.stderr?.message || String(err.stderr) || "";
             let category = "General error";
 
