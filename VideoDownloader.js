@@ -1,5 +1,6 @@
 const { YTGetLinks } = require("./services/linksGenerator/linksGeneratorService");
 const { getLinks, writeUpdate } = require("./services/linksService");
+const { generateThumbnails } = require("./services/thumbnailGeneratorService");
 const { checkHours } = require("./services/toolsService");
 const { beginDownloadingVideos } = require("./services/videoDownloaderService");
 
@@ -10,6 +11,7 @@ exports.VideoDownloader = async () => {
             const links = await YTGetLinks();
             if(links && links.length > 0){
                 await beginDownloadingVideos(links);
+                await generateThumbnails()
             };
             return;
         }
@@ -26,6 +28,7 @@ exports.VideoDownloader = async () => {
             });
             const links = await YTGetLinks();
             await beginDownloadingVideos(links)
+            await generateThumbnails()
         }
         return;
     } catch (err) {
