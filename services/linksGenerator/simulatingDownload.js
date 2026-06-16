@@ -1,6 +1,6 @@
 const { lockedVideo } = require("../linksService");
 const { addLog } = require("../logService");
-const { runCommand, clearNames } = require("../toolsService");
+const { runCommand, clearNames, cleanName } = require("../toolsService");
 
 exports.simulateDownload = async (newVideos, Links) => {
     const videoForDownload = [];
@@ -11,8 +11,6 @@ exports.simulateDownload = async (newVideos, Links) => {
         : new Map();
 
     console.log(`🥽 Simulating a download\n`)
-    //console.log("linksMap: ",linksMap)
-    //return;
     let i = 0;
     for (const video of newVideos) {
         i++
@@ -43,15 +41,15 @@ exports.simulateDownload = async (newVideos, Links) => {
                 type: "SimulatingDownload",
                 message: `🧱 Video ${video.name} : ${category} `
             });
-            console.log(`video: ${video}`)
-            await lockedId(linksMap, video) // В linksMap нету этих видосов 
+            await lockedId(linksMap, video)
         }
     };
     return videoForDownload;
 }
 
 async function lockedId(linksMap, video) {
-    const foundVideo = linksMap.get(video.name);
+    const foundVideo = linksMap.get(cleanName(video.name));
+    
     if (foundVideo) {
         await lockedVideo({
             id: foundVideo.id,
@@ -59,6 +57,6 @@ async function lockedId(linksMap, video) {
         });
         console.log(`Video id: ${foundVideo.id} LOCKED ✅ (Name: ${foundVideo.name})`)
     } else {
-        console.log(`Video not found in Map: ${video.name}`)
+        console.log(`Video not found in links database : ${video.name}`)
     }
 }
