@@ -1,6 +1,9 @@
 const QRCode = require('qrcode')
+const config = require('../../config.js')
+
 exports.getQRCode = async () => {
-    const URL = 'http://192.168.0.8:3001/api/auth/QRCode';
+    const IP = config.SERVER_URL;
+    const URL = `http://${IP}/api/auth/QRCode`;
     try{
         const qrAsText = await QRCode.toString(URL,{
             type: 'terminal',
