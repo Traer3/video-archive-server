@@ -1,12 +1,49 @@
 const path = require('path');
+const fsPromises = require("fs").promises
 
-const { getVideoList, importVideo } = require("../videoService.js");
+const { getVideoList, importVideo, readFolders } = require("../videoService.js");
 const { exists, cleanName, clearNames } = require("../toolsService.js");
 const { addLog } = require("../logService.js");
 const { getLinks } = require("../linksService.js");
 const { getVideoSize } = require("./getVideoSize.js");
 
 const VIDEOS_DIR = path.join(__dirname, "../../videos");
+
+exports.videoImporter = async (newVideo) => {
+    const folderVideos = await  readFolders(VIDEOS_DIR);
+    const foundVideo = checkForDuplicates(folderVideos,newVideo);
+}
+
+function checkForDuplicates(folderVideos,newVideo) {
+    const videosTable = new Map() 
+    for(const video of folderVideos){
+        const foundVideo = videosTable.get(cleanName(video.name))
+        if(!foundVideo || foundVideo === undefined){
+            videosTable.set(cleanName(video.name),video)
+        }else{
+            //tyt идет дрочь с дубликатами
+        }
+    }
+}
+
+async function sizeChecker(foundVideo, video) {
+    const foundVideoSize = await fsPromises.stat(foundVideo.fullPath)
+    const videoSize = await fsPromises.stat(video.path)
+
+    if(foundVideoSize !== videoSize){
+        //менять имя video на +1
+        const newName = nameChanger(video.name)
+
+    }
+}
+
+function nameChanger (videoName){
+    //поменять имя на video.name(1) или больше 
+    const newName = `${videoName}(1)`;
+    return newName;
+}
+
+/*
 
 exports.videoImporter = async (name) => {
     if (!(await exists(VIDEOS_DIR))) {
@@ -126,3 +163,4 @@ async function uniqueName(video) {
     return { ...video, name: finalName };
 
 };
+*/
