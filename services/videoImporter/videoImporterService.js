@@ -22,6 +22,7 @@ function checkForDuplicates(folderVideos,newVideo) {
             videosTable.set(cleanName(video.name),video)
         }else{
             //tyt идет дрочь с дубликатами
+
         }
     }
 }
@@ -32,6 +33,7 @@ async function sizeChecker(foundVideo, video) {
 
     if(foundVideoSize !== videoSize){
         //менять имя video на +1
+        
         const newName = nameChanger(video.name)
 
     }
