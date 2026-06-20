@@ -50,9 +50,10 @@ exports.durationGenerator = async () => {
                         message: `❌ Error generating duration for video ${vid.id}`
                     });
                 }
-            } else {
+            }
+            if(!folderVideo || folderVideo === undefined){
                 console.log(`Video not found ${vidName}`)
-            };
+            }
         }
     } catch (err) {
         console.error(`❌ Error generating duration : ', ${err.message}`);

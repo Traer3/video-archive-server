@@ -1,4 +1,5 @@
 const path = require('path');
+const fsPromises = require("fs").promises
 
 const { getVideoList, importVideo } = require("../videoService.js");
 const { exists, cleanName, clearNames } = require("../toolsService.js");
@@ -121,8 +122,25 @@ async function uniqueName(video) {
     const nextNumber = currentNumber + 1;
     const finalName = `${baseName} (${nextNumber})`;
 
+    await renameVideoFile(video.fullPath, finalName);
     console.log("Current number: ", currentNumber);
     console.log("Final name: ", finalName);
     return { ...video, name: finalName };
 
 };
+
+async function renameVideoFile(videoPath, finalName) {
+    try{
+        const {dir, ext} = path.parse(videoPath);
+        const newFullPath = path.format({
+            dir: dir,
+            name: finalName,
+            ext: ext
+        });
+        const filePath = videoPath.trim()
+        console.log("newFilePath: ",newFullPath)
+        await fsPromises.rename(filePath,newFullPath)
+    }catch(err){
+
+    }
+}

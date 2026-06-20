@@ -20,7 +20,8 @@ exports.getVideoSize = async (videoName) =>{
                     name: videoName,
                     duration: "",
                     sizeMB: sizeMB,
-                    category: ''
+                    category: '',
+                    fullPath: filePath
                 }
             }
         };
