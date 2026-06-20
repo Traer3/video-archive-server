@@ -1,51 +1,12 @@
 const path = require('path');
-const fsPromises = require("fs").promises
 
-const { getVideoList, importVideo, readFolders } = require("../videoService.js");
+const { getVideoList, importVideo } = require("../videoService.js");
 const { exists, cleanName, clearNames } = require("../toolsService.js");
 const { addLog } = require("../logService.js");
 const { getLinks } = require("../linksService.js");
 const { getVideoSize } = require("./getVideoSize.js");
 
 const VIDEOS_DIR = path.join(__dirname, "../../videos");
-
-exports.videoImporter = async (newVideo) => {
-    const folderVideos = await  readFolders(VIDEOS_DIR);
-    const foundVideo = checkForDuplicates(folderVideos,newVideo);
-}
-
-function checkForDuplicates(folderVideos,newVideo) {
-    const videosTable = new Map() 
-    for(const video of folderVideos){
-        const foundVideo = videosTable.get(cleanName(video.name))
-        if(!foundVideo || foundVideo === undefined){
-            videosTable.set(cleanName(video.name),video)
-        }else{
-            //tyt идет дрочь с дубликатами
-
-        }
-    }
-}
-
-async function sizeChecker(foundVideo, video) {
-    const foundVideoSize = await fsPromises.stat(foundVideo.fullPath)
-    const videoSize = await fsPromises.stat(video.path)
-
-    if(foundVideoSize !== videoSize){
-        //менять имя video на +1
-        
-        const newName = nameChanger(video.name)
-
-    }
-}
-
-function nameChanger (videoName){
-    //поменять имя на video.name(1) или больше 
-    const newName = `${videoName}(1)`;
-    return newName;
-}
-
-/*
 
 exports.videoImporter = async (name) => {
     if (!(await exists(VIDEOS_DIR))) {
@@ -54,7 +15,9 @@ exports.videoImporter = async (name) => {
     };
     const DBvideos = await getVideoList();
     const cleanDBvideos = clearNames(DBvideos);
-    const namesFromDB = new Map(cleanDBvideos.map(video => [video.name, video]))
+    const namesFromDB = cleanDBvideos  
+        ? new Map(cleanDBvideos.map(video => [video.name, video]))
+        : new Map();
 
     try {
         const foundVideo = await getVideoSize(name);
@@ -100,12 +63,11 @@ async function checkDuplicate(DBvideos, video) {
     };
     const normalName = cleanName(video.name);
     const foundVideo = DBvideos.get(normalName);
-    //console.log("foundVideo: ",foundVideo)   //найти размер 
 
     if (!foundVideo) {
         const categorizedVideo = await checkCategory(video);
 
-        const res =await importVideo({
+        const res = await importVideo({
             name: categorizedVideo.name,
             duration: categorizedVideo.duration,
             sizeMB: categorizedVideo.sizeMB,
@@ -123,7 +85,6 @@ async function checkDuplicate(DBvideos, video) {
         return categorizedVideo;
     };
 
-        //он проверяет сам себя на размер ,  а не следущее видео 
     if (foundVideo.size_mb === video.sizeMB) {
         console.log(`⚠ Video is duplicate: ${foundVideo.name} (${foundVideo.size_mb} MB)`);
         await addLog({
@@ -165,4 +126,3 @@ async function uniqueName(video) {
     return { ...video, name: finalName };
 
 };
-*/

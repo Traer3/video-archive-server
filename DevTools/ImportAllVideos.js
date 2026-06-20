@@ -42,10 +42,8 @@ async function getNewVideos(DBnames, videoFiles) {
         if (video.name === 'isFull.txt') {
             continue;
         }
-        const cleanVideo = deleteExtension(video.name)
-        const cleanVideoName = cleanName(cleanVideo);
-        const foundVideo = DBnames.has(cleanVideoName);
-
+        const cleanVideo = deleteExtension(video.name).toLowerCase().trim()
+        const foundVideo = DBnames.has(cleanVideo);
         if (!foundVideo) {
             newVideos.push(cleanVideo);
         };
