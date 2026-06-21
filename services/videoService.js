@@ -28,7 +28,7 @@ exports.readFolders = async (videosDir) => {
 };
 
 exports.getVideoList = async () => {
-    const result = await pool.query("SELECT * FROM videos ORDER BY id ASC");
+    const result = await pool.query("SELECT * FROM videos ORDER BY id DESC");
     return result.rows
 };
 
