@@ -12,6 +12,7 @@ const { videoImporter } = require('../services/videoImporter/videoImporterServic
 const { YTGetLinks } = require('../services/linksGenerator/linksGeneratorService.js');
 const { beginDownloadingVideos } = require('../services/videoDownloaderService.js');
 const { updateYTdlp } = require('../services/autoUpdate/YTdlpService.js');
+const { testDB } = require('../testDB.js');
 
 router.get('/videos', getVideos);
 router.get('/videoList', getVideoList);
@@ -22,6 +23,15 @@ router.get('/thumbnails/:thumbnailName', getThumbnail);
 
 router.delete('/deleteVideo/:id', deleteVideo);
 router.delete('/deleteThumbnail/:name', deleteThumbnail); //эту хуйню 
+
+router.get('/vids', async (req, res) => {
+    try {
+        await testDB()
+        res.json({ message: "test in background" })
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 router.get('/yt', async (req, res) => {
     try {
