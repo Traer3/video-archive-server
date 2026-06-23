@@ -1,4 +1,3 @@
-
 const path = require("path");
 const config = require('../config.js');
 const videoService = require('../services/videoService.js')
@@ -23,7 +22,7 @@ exports.getVideos = async (req, res) => {
             return res.status(200).json({ videos: [], total: 0 });
         }
 
-        const sortedFiles = allVideos.slice(startIndex,endIndex);
+        const sortedFiles = allVideos.slice(startIndex, endIndex);
         const thumbnails = await readFolders(THUMBNAILS_DIR);
         const thumbnailNames = new Set(thumbnails.map(thumbnail => thumbnail.name))
 
