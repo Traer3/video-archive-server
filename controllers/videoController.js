@@ -1,6 +1,5 @@
 
 const path = require("path");
-const fsPromises = require("fs").promises
 const config = require('../config.js');
 const videoService = require('../services/videoService.js')
 const { readFolders } = require("../services/videoService.js");
@@ -20,36 +19,21 @@ exports.getVideos = async (req, res) => {
         const videoFiles = await readFolders(VIDEOS_DIR);
 
         const allVideos = sortedVideos(videoFiles, DBvideos)
-
         if (allVideos.length === 0) {
             return res.status(200).json({ videos: [], total: 0 });
         }
 
-        const fileteredFiles = allVideos.filter(v => v.name.match(/\.(mp4|mov|mkv|webm|avi)$/i));
-        const filesWithStats = await Promise.all(
-            fileteredFiles.map(async (file) => {
-                try {
-                    const stats = await fsPromises.stat(file.fullPath);
-                    return { ...file, mtime: stats.mtime };
-                } catch (err) {
-                    return { ...file, mtime: 0 };
-                }
-            })
-        );
-
-        const sortedFiles = filesWithStats.sort((a, b) => b.mtime - a.mtime);
-
-        const paginatedFiles = sortedFiles.slice(startIndex, endIndex);
-
+        const sortedFiles = allVideos.slice(startIndex,endIndex);
         const thumbnails = await readFolders(THUMBNAILS_DIR);
-        const thumbnailNames = thumbnails.map(thumbnail => thumbnail.name);
+        const thumbnailNames = new Set(thumbnails.map(thumbnail => thumbnail.name))
 
-        const videoList = paginatedFiles.map((v) => {
+        const videoList = sortedFiles.map((v) => {
             const file = v.name;
+            const filenName = deleteExtension(v.name)
             const thumbnailName = replaceExtension(file, '.jpg');
-            const hasThumbnail = thumbnailNames.includes(thumbnailName);
+            const hasThumbnail = thumbnailNames.has(thumbnailName);
             return {
-                name: file,
+                name: filenName,
                 url: `${config.SERVER_URL}/api/server/${encodeURIComponent(file)}`,
                 thumbnail: hasThumbnail
                     ? `${config.SERVER_URL}/api/server/thumbnails/${encodeURIComponent(thumbnailName)}`
@@ -57,11 +41,10 @@ exports.getVideos = async (req, res) => {
             };
         });
 
-
         res.json({
             page,
-            total: sortedFiles.length,
-            hasNext: endIndex < sortedFiles.length,
+            total: allVideos.length,
+            hasNext: endIndex < allVideos.length,
             videos: videoList
         });
     } catch (err) {
@@ -72,7 +55,7 @@ exports.getVideos = async (req, res) => {
 
 function sortedVideos(videoFiles, DBvideos) {
     const Videos = [];
-    const dbVideosName = [...DBvideos.map(video => cleanName(video.name))].reverse()
+    const dbVideosName = [...DBvideos.map(video => cleanName(video.name))]
     const fileNames = new Map(videoFiles.map(vid => [cleanName(deleteExtension(vid.name)), vid]))
 
     for (const dbName of dbVideosName) {
