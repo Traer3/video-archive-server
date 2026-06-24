@@ -1,8 +1,9 @@
-const { lockedVideo } = require("../linksService");
+const { lockedVideo, getLinks } = require("../linksService");
 const { addLog } = require("../logService");
 const { runCommand, clearNames, cleanName } = require("../toolsService");
 
-exports.simulateDownload = async (newVideos, Links) => {
+exports.simulateDownload = async (newVideos) => {
+    const Links = await getLinks()
     const videoForDownload = [];
 
     const clearedLinks = clearNames(Links)

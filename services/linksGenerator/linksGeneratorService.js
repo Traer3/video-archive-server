@@ -4,7 +4,6 @@ const { cleanName} = require('../toolsService');
 const { writeLinks, getLinks } = require('../linksService');
 const { getYouTubeLinks } = require("./getYouTubeLinks");
 const { newNameChecker } = require("./newNameChecker");
-const { simulateDownload } = require("./simulatingDownload");
 
 exports.YTGetLinks = async () => {
     console.log(`\n🗘 Receiving links...`);
@@ -25,16 +24,7 @@ exports.YTGetLinks = async () => {
         console.log("No fresh videos")
         return [];
     }
-
-    let videoForDownload
-    if (newVideos.length !== 0) {
-        if(!Links || Links.length === 0){
-            Links = await getLinks();
-        }
-        videoForDownload = await simulateDownload(newVideos, Links)
-        console.log(`\n🏁 Links written`);
-        return videoForDownload;
-    }
+    return newVideos;
 };
 
 async function sendNewLinks(Links, YTVideos) {

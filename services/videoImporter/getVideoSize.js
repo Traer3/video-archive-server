@@ -9,7 +9,7 @@ const VIDEOS_DIR = path.join(__dirname, "../../videos");
 exports.getVideoSize = async (videoName) =>{
     const files = await readFolders(VIDEOS_DIR);
     try{
-        const normalName = videoName.toLowerCase().trim();
+        const normalName = videoName.toLowerCase().trim()
         for (const file of files) {
             const fileName = deleteExtension(file.name).toLowerCase().trim()
             const filePath = file.fullPath
@@ -22,6 +22,19 @@ exports.getVideoSize = async (videoName) =>{
                     sizeMB: sizeMB,
                     category: '',
                     fullPath: filePath
+                }
+            }else{
+                if (fileName.normalize('NFKC') === normalName.normalize('NFKC')) {
+                    console.log("Normalize unicode")
+                    const stat = await fsPromises.stat(filePath);
+                    const sizeMB = (stat.size / (1024 * 1024)).toFixed(2);
+                    return{
+                        name: videoName,
+                        duration: "",
+                        sizeMB: sizeMB,
+                        category: '',
+                        fullPath: filePath
+                    }
                 }
             }
         };
