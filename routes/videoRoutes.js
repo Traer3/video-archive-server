@@ -21,7 +21,7 @@ router.get('/:videoName', getVideo);
 router.get('/thumbnails/:thumbnailName', getThumbnail);
 
 router.delete('/deleteVideo/:id', deleteVideo);
-router.delete('/deleteThumbnail/:name', deleteThumbnail); //эту хуйню 
+router.delete('/deleteThumbnail/:name', deleteThumbnail);
 
 router.get('/yt', async (req, res) => {
     try {
